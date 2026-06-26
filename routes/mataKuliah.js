@@ -17,12 +17,12 @@ router.post('/', authMiddleware, adminOrDosen, async (req, res) => {
   if (!kode_mk || !nama_mk) return res.status(400).json({ error: 'Kode dan nama MK wajib diisi' });
   try {
     const [result] = await db.query(
-      'INSERT INTO mata_kuliah (kode_mk, nama_mk, sks, semester, jurusan, dosen_pengampu) VALUES (?,?,?,?,?,?)',
+      'INSERT INTO mata_kuliah (kode_mk, nama_mk, sks, semester, jurusan, dosen_pengampu) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
       [kode_mk, nama_mk, sks, semester, jurusan, dosen_pengampu]
     );
-    res.status(201).json({ id: result.insertId, message: 'Mata kuliah berhasil ditambahkan' });
+    res.status(201).json({ id: result[0].id, message: 'Mata kuliah berhasil ditambahkan' });
   } catch (err) {
-    if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Kode MK sudah ada' });
+    if (err.code === '23505') return res.status(400).json({ error: 'Kode MK sudah ada' });
     res.status(500).json({ error: err.message });
   }
 });
@@ -31,7 +31,7 @@ router.put('/:id', authMiddleware, adminOrDosen, async (req, res) => {
   const { kode_mk, nama_mk, sks, semester, jurusan, dosen_pengampu } = req.body;
   try {
     await db.query(
-      'UPDATE mata_kuliah SET kode_mk=?, nama_mk=?, sks=?, semester=?, jurusan=?, dosen_pengampu=? WHERE id=?',
+      'UPDATE mata_kuliah SET kode_mk=$1, nama_mk=$2, sks=$3, semester=$4, jurusan=$5, dosen_pengampu=$6 WHERE id=$7',
       [kode_mk, nama_mk, sks, semester, jurusan, dosen_pengampu, req.params.id]
     );
     res.json({ message: 'Mata kuliah berhasil diperbarui' });
@@ -42,7 +42,7 @@ router.put('/:id', authMiddleware, adminOrDosen, async (req, res) => {
 
 router.delete('/:id', authMiddleware, adminOrDosen, async (req, res) => {
   try {
-    await db.query('DELETE FROM mata_kuliah WHERE id = ?', [req.params.id]);
+    await db.query('DELETE FROM mata_kuliah WHERE id = $1', [req.params.id]);
     res.json({ message: 'Mata kuliah berhasil dihapus' });
   } catch (err) {
     res.status(500).json({ error: err.message });
