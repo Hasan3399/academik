@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🎓 SIAKAD - Sistem Informasi Akademik
 
 Aplikasi web sistem informasi akademik berbasis cloud dengan Node.js, Express, dan MySQL.
@@ -158,3 +159,6 @@ siakad/
 4. Demo input nilai dan konversi otomatis
 5. Tunjukkan dashboard statistik
 6. Tunjukkan URL Railway (bukti sudah di cloud)
+=======
+# siakad
+>>>>>>> 0226b462fa9ec2668db1c6c2e50396065099bff0
