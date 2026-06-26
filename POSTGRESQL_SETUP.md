@@ -117,7 +117,7 @@ npm run dev
 npm start
 ```
 
-## 📝 API Endpoints
+## 📌 API Endpoints
 
 ### Health Check
 ```
@@ -166,7 +166,7 @@ PUT /api/nilai/:id - Update
 DELETE /api/nilai/:id - Delete
 ```
 
-## 🔐 Kredensial Default
+## 🔑 Kredensial Default
 
 ### Admin
 - Username: `admin`
@@ -268,7 +268,7 @@ psql -U postgres -d siakad -f siakad_converted.sql
 - Cek log error di console
 - Restart server: `npm run dev`
 
-## 📓 Testing dengan Postman
+## 📝 Testing dengan Postman
 
 ### 1. Login
 ```
@@ -303,7 +303,7 @@ Contoh:
 postgresql://postgres:password@localhost:5432/siakad
 ```
 
-## 📚 Dokumentasi Berguna
+## 📖 Dokumentasi Berguna
 - [PostgreSQL Official Docs](https://www.postgresql.org/docs/)
 - [Node.js pg module](https://node-postgres.com/)
 - [Express.js Guide](https://expressjs.com/)
