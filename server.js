@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const { pool } = require('./config/database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,6 +14,24 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Health check endpoint
+app.get('/api/health', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW()');
+    res.json({
+      status: 'ok',
+      database: 'connected',
+      timestamp: result.rows[0]
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      database: 'disconnected',
+      message: error.message
+    });
+  }
+});
 
 // Routes API
 app.use('/api/auth', require('./routes/auth'));
@@ -29,4 +48,14 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`✅ SIAKAD berjalan di http://localhost:${PORT}`);
   console.log(`📦 Mode: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🗄️  Database: PostgreSQL`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully...');
+  pool.end(() => {
+    console.log('Connection pool closed');
+    process.exit(0);
+  });
 });
