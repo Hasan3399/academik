@@ -3,34 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SIAKAD - Sistem Informasi Akademik</title>
+  <title>ACADEMIK - Platform Akademik Modern</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
 
 <!-- ======== HALAMAN LOGIN ======== -->
 <div id="page-login" class="page">
-  <div class="login-container">
-    <div class="login-card">
-      <div class="login-logo">
-        <div class="logo-icon">🎓</div>
-        <h1>SIAKAD</h1>
-        <p>Sistem Informasi Akademik</p>
+  <div class="login-wrapper">
+    <div class="login-left">
+      <div class="login-brand">
+        <svg class="brand-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+          <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+        </svg>
+        <h1>ACADEMIK</h1>
+        <p>Platform Akademik Modern</p>
       </div>
-      <form id="form-login">
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="login-username" placeholder="Masukkan username" required />
+      <div class="login-features">
+        <div class="feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          <span>Manajemen Mahasiswa</span>
         </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="login-password" placeholder="Masukkan password" required />
+        <div class="feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span>Katalog Mata Kuliah</span>
         </div>
-        <div id="login-error" class="alert alert-error" style="display:none"></div>
-        <button type="submit" class="btn btn-primary btn-full">Masuk</button>
-      </form>
-      <div class="login-hint">
-        <small>Demo: admin / admin123 &nbsp;|&nbsp; dosen1 / admin123 &nbsp;|&nbsp; mhs001 / admin123</small>
+        <div class="feature-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8l-8 8"/><path d="M16 16l-8-8"/></svg>
+          <span>Tracking Nilai Akademik</span>
+        </div>
+      </div>
+    </div>
+    <div class="login-right">
+      <div class="login-card">
+        <h2>Selamat Datang</h2>
+        <p>Masuk untuk mengelola data akademik</p>
+        <form id="form-login">
+          <div class="form-group">
+            <label>Username</label>
+            <div class="input-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <input type="text" id="login-username" placeholder="Masukkan username" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <div class="input-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input type="password" id="login-password" placeholder="Masukkan password" required />
+            </div>
+          </div>
+          <div id="login-error" class="alert alert-error" style="display:none"></div>
+          <button type="submit" class="btn btn-primary btn-full">
+            <span>Masuk</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          </button>
+        </form>
+        <div class="login-hint">
+          <small>Demo: admin / admin123 &nbsp;|&nbsp; dosen1 / admin123 &nbsp;|&nbsp; mhs001 / admin123</small>
+        </div>
       </div>
     </div>
   </div>
@@ -41,33 +73,47 @@
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <div class="logo-icon">🎓</div>
-      <span class="sidebar-title">SIAKAD</span>
-      <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+      <svg class="brand-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+      </svg>
+      <span class="sidebar-title">ACADEMIK</span>
+      <button class="sidebar-close" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+      </button>
     </div>
     <nav class="sidebar-nav">
       <a href="#" class="nav-item active" data-page="dashboard">
-        <span class="nav-icon">📊</span> Dashboard
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>Dashboard</span>
       </a>
       <a href="#" class="nav-item" data-page="mahasiswa">
-        <span class="nav-icon">👨‍🎓</span> Mahasiswa
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Mahasiswa</span>
       </a>
       <a href="#" class="nav-item" data-page="mata-kuliah">
-        <span class="nav-icon">📚</span> Mata Kuliah
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Mata Kuliah</span>
       </a>
       <a href="#" class="nav-item" data-page="nilai">
-        <span class="nav-icon">📝</span> Nilai
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span>Nilai</span>
       </a>
     </nav>
     <div class="sidebar-footer">
       <div class="user-info">
-        <span class="user-avatar">👤</span>
+        <div class="user-avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
         <div>
           <div id="sidebar-nama" class="user-name">-</div>
           <div id="sidebar-role" class="user-role">-</div>
         </div>
       </div>
-      <button class="btn btn-outline btn-small" onclick="logout()">Keluar</button>
+      <button class="btn btn-logout" onclick="logout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span>Keluar</span>
+      </button>
     </div>
   </aside>
 
@@ -75,8 +121,15 @@
   <div class="main-wrapper">
     <!-- Topbar -->
     <header class="topbar">
-      <button class="topbar-menu" onclick="toggleSidebar()">☰</button>
+      <button class="topbar-menu" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
       <h2 class="topbar-title" id="topbar-title">Dashboard</h2>
+      <div class="topbar-actions">
+        <div class="notification-bell">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+      </div>
     </header>
 
     <!-- Content Area -->
@@ -86,28 +139,36 @@
       <div id="content-dashboard" class="content-section">
         <div class="stats-grid">
           <div class="stat-card stat-blue">
-            <div class="stat-icon">👨‍🎓</div>
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
             <div class="stat-info">
               <div class="stat-number" id="stat-mhs">-</div>
               <div class="stat-label">Total Mahasiswa</div>
             </div>
           </div>
           <div class="stat-card stat-green">
-            <div class="stat-icon">📚</div>
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </div>
             <div class="stat-info">
               <div class="stat-number" id="stat-mk">-</div>
               <div class="stat-label">Mata Kuliah</div>
             </div>
           </div>
           <div class="stat-card stat-orange">
-            <div class="stat-icon">📝</div>
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
             <div class="stat-info">
               <div class="stat-number" id="stat-nilai">-</div>
               <div class="stat-label">Total Nilai</div>
             </div>
           </div>
           <div class="stat-card stat-purple">
-            <div class="stat-icon">⭐</div>
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
             <div class="stat-info">
               <div class="stat-number" id="stat-rata">-</div>
               <div class="stat-label">Rata-rata Nilai</div>
@@ -117,11 +178,17 @@
 
         <div class="dashboard-charts">
           <div class="chart-card">
-            <h3>Distribusi Nilai</h3>
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+              Distribusi Nilai
+            </h3>
             <div id="chart-nilai" class="bar-chart"></div>
           </div>
           <div class="chart-card">
-            <h3>Mahasiswa per Jurusan</h3>
+            <h3>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8l-8 8"/><path d="M16 16l-8-8"/></svg>
+              Mahasiswa per Jurusan
+            </h3>
             <div id="chart-jurusan" class="bar-chart"></div>
           </div>
         </div>
@@ -130,8 +197,14 @@
       <!-- ===== MAHASISWA ===== -->
       <div id="content-mahasiswa" class="content-section" style="display:none">
         <div class="section-toolbar">
-          <input type="search" id="search-mhs" placeholder="Cari nama / NIM..." class="search-input" oninput="filterMahasiswa()" />
-          <button class="btn btn-primary" onclick="openModal('modal-tambah-mhs')">+ Tambah Mahasiswa</button>
+          <div class="search-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="search-mhs" placeholder="Cari nama / NIM..." class="search-input" oninput="filterMahasiswa()" />
+          </div>
+          <button class="btn btn-primary" onclick="openModal('modal-tambah-mhs')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Tambah Mahasiswa</span>
+          </button>
         </div>
         <div class="table-wrapper">
           <table class="data-table" id="tabel-mhs">
@@ -148,8 +221,14 @@
       <!-- ===== MATA KULIAH ===== -->
       <div id="content-mata-kuliah" class="content-section" style="display:none">
         <div class="section-toolbar">
-          <input type="search" id="search-mk" placeholder="Cari mata kuliah..." class="search-input" oninput="filterMataKuliah()" />
-          <button class="btn btn-primary" onclick="openModal('modal-tambah-mk')">+ Tambah Mata Kuliah</button>
+          <div class="search-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="search-mk" placeholder="Cari mata kuliah..." class="search-input" oninput="filterMataKuliah()" />
+          </div>
+          <button class="btn btn-primary" onclick="openModal('modal-tambah-mk')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Tambah Mata Kuliah</span>
+          </button>
         </div>
         <div class="table-wrapper">
           <table class="data-table">
@@ -166,8 +245,14 @@
       <!-- ===== NILAI ===== -->
       <div id="content-nilai" class="content-section" style="display:none">
         <div class="section-toolbar">
-          <input type="search" id="search-nilai" placeholder="Cari mahasiswa / MK..." class="search-input" oninput="filterNilai()" />
-          <button class="btn btn-primary" onclick="openModal('modal-tambah-nilai')">+ Tambah Nilai</button>
+          <div class="search-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="search-nilai" placeholder="Cari mahasiswa / MK..." class="search-input" oninput="filterNilai()" />
+          </div>
+          <button class="btn btn-primary" onclick="openModal('modal-tambah-nilai')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Tambah Nilai</span>
+          </button>
         </div>
         <div class="table-wrapper">
           <table class="data-table">
@@ -190,7 +275,9 @@
   <div class="modal-box">
     <div class="modal-header">
       <h3 id="modal-mhs-title">Tambah Mahasiswa</h3>
-      <button onclick="closeModal('modal-tambah-mhs')">✕</button>
+      <button onclick="closeModal('modal-tambah-mhs')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+      </button>
     </div>
     <form id="form-mhs">
       <input type="hidden" id="mhs-id" />
@@ -258,7 +345,9 @@
   <div class="modal-box">
     <div class="modal-header">
       <h3 id="modal-mk-title">Tambah Mata Kuliah</h3>
-      <button onclick="closeModal('modal-tambah-mk')">✕</button>
+      <button onclick="closeModal('modal-tambah-mk')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+      </button>
     </div>
     <form id="form-mk">
       <input type="hidden" id="mk-id" />
@@ -304,7 +393,9 @@
   <div class="modal-box">
     <div class="modal-header">
       <h3 id="modal-nilai-title">Tambah Nilai</h3>
-      <button onclick="closeModal('modal-tambah-nilai')">✕</button>
+      <button onclick="closeModal('modal-tambah-nilai')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+      </button>
     </div>
     <form id="form-nilai">
       <input type="hidden" id="nilai-id" />
