@@ -1,66 +1,104 @@
+const { query } = require('../config/database');
 const express = require('express');
 const router = express.Router();
-const db = require('../config/database');
-const { authMiddleware, adminOnly } = require('../config/middleware');
 
-// GET semua mahasiswa
-router.get('/', authMiddleware, async (req, res) => {
+// Get all mahasiswa
+router.get('/', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM mahasiswa ORDER BY nim');
-    res.json(rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// GET satu mahasiswa
-router.get('/:id', authMiddleware, async (req, res) => {
-  try {
-    const [rows] = await db.query('SELECT * FROM mahasiswa WHERE id = $1', [req.params.id]);
-    if (!rows.length) return res.status(404).json({ error: 'Mahasiswa tidak ditemukan' });
-    res.json(rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// POST tambah mahasiswa - admin only
-router.post('/', authMiddleware, adminOnly, async (req, res) => {
-  const { nim, nama, email, jurusan, angkatan, jenis_kelamin, no_hp, alamat, status } = req.body;
-  if (!nim || !nama) return res.status(400).json({ error: 'NIM dan nama wajib diisi' });
-  try {
-    const [result] = await db.query(
-      'INSERT INTO mahasiswa (nim, nama, email, jurusan, angkatan, jenis_kelamin, no_hp, alamat, status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id',
-      [nim, nama, email, jurusan, angkatan, jenis_kelamin, no_hp, alamat, status || 'aktif']
+    const result = await query(
+      'SELECT id, nim, nama, email, jurusan, angkatan, jenis_kelamin, status FROM mahasiswa ORDER BY created_at DESC'
     );
-    res.status(201).json({ id: result[0].id, message: 'Mahasiswa berhasil ditambahkan' });
-  } catch (err) {
-    if (err.code === '23505') return res.status(400).json({ error: 'NIM sudah terdaftar' });
-    res.status(500).json({ error: err.message });
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Terjadi kesalahan pada server' });
   }
 });
 
-// PUT update mahasiswa - admin only
-router.put('/:id', authMiddleware, adminOnly, async (req, res) => {
-  const { nim, nama, email, jurusan, angkatan, jenis_kelamin, no_hp, alamat, status } = req.body;
+// Get mahasiswa by ID
+router.get('/:id', async (req, res) => {
   try {
-    await db.query(
-      'UPDATE mahasiswa SET nim=$1, nama=$2, email=$3, jurusan=$4, angkatan=$5, jenis_kelamin=$6, no_hp=$7, alamat=$8, status=$9 WHERE id=$10',
-      [nim, nama, email, jurusan, angkatan, jenis_kelamin, no_hp, alamat, status, req.params.id]
+    const result = await query(
+      'SELECT * FROM mahasiswa WHERE id = $1',
+      [req.params.id]
     );
-    res.json({ message: 'Mahasiswa berhasil diperbarui' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Mahasiswa tidak ditemukan' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Terjadi kesalahan pada server' });
   }
 });
 
-// DELETE hapus mahasiswa - admin only
-router.delete('/:id', authMiddleware, adminOnly, async (req, res) => {
+// Create mahasiswa
+router.post('/', async (req, res) => {
   try {
-    await db.query('DELETE FROM mahasiswa WHERE id = $1', [req.params.id]);
+    const { nim, nama, email, jurusan, angkatan, jenis_kelamin } = req.body;
+
+    if (!nim || !nama) {
+      return res.status(400).json({ error: 'NIM dan nama harus diisi' });
+    }
+
+    const result = await query(
+      'INSERT INTO mahasiswa (nim, nama, email, jurusan, angkatan, jenis_kelamin) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [nim, nama, email, jurusan, angkatan, jenis_kelamin]
+    );
+
+    res.status(201).json({
+      message: 'Mahasiswa berhasil ditambahkan',
+      data: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    if (error.code === '23505') {
+      res.status(400).json({ error: 'NIM sudah terdaftar' });
+    } else {
+      res.status(500).json({ error: 'Terjadi kesalahan pada server' });
+    }
+  }
+});
+
+// Update mahasiswa
+router.put('/:id', async (req, res) => {
+  try {
+    const { nama, email, jurusan, angkatan, jenis_kelamin, status } = req.body;
+
+    const result = await query(
+      'UPDATE mahasiswa SET nama = $1, email = $2, jurusan = $3, angkatan = $4, jenis_kelamin = $5, status = $6 WHERE id = $7 RETURNING *',
+      [nama, email, jurusan, angkatan, jenis_kelamin, status, req.params.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Mahasiswa tidak ditemukan' });
+    }
+
+    res.json({
+      message: 'Mahasiswa berhasil diperbarui',
+      data: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Terjadi kesalahan pada server' });
+  }
+});
+
+// Delete mahasiswa
+router.delete('/:id', async (req, res) => {
+  try {
+    const result = await query('DELETE FROM mahasiswa WHERE id = $1 RETURNING id', [req.params.id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Mahasiswa tidak ditemukan' });
+    }
+
     res.json({ message: 'Mahasiswa berhasil dihapus' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Terjadi kesalahan pada server' });
   }
 });
 
