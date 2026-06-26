@@ -1,30 +1,45 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
-let pool;
+// Konfigurasi Pool PostgreSQL
+const pool = new Pool({
+  user: process.env.DB_USER || 'postgres',
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || 5432,
+  database: process.env.DB_NAME || 'siakad',
+});
 
-if (process.env.DATABASE_URL) {
-  // Railway provides DATABASE_URL for PostgreSQL
-  pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
-  });
-} else {
-  pool = new Pool({
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
-    database: process.env.DB_NAME || 'siakad',
-    user: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASSWORD || '',
-    max: 10,
-  });
-}
+// Atau gunakan DATABASE_URL langsung dari environment variable
+// const pool = new Pool({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+// });
 
-// Wrap pool.query to return [rows, fields] so existing route code
-// using `const [rows] = await db.query(...)` works without changes.
+// Test koneksi
+pool.on('connect', () => {
+  console.log('✅ Database connected successfully');
+});
+
+pool.on('error', (err) => {
+  console.error('❌ Database connection error:', err.message);
+});
+
+// Query helper
 const query = async (text, params) => {
-  const result = await pool.query(text, params);
-  return [result.rows, result.fields];
+  const start = Date.now();
+  try {
+    const result = await pool.query(text, params);
+    const duration = Date.now() - start;
+    console.log('Executed query', { text, duration, rows: result.rowCount });
+    return result;
+  } catch (error) {
+    console.error('Database query error:', error);
+    throw error;
+  }
 };
 
-module.exports = { query };
+module.exports = {
+  query,
+  pool,
+};
