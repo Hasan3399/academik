@@ -11,7 +11,7 @@ router.post('/login', async (req, res) => {
     return res.status(400).json({ error: 'Username dan password wajib diisi' });
 
   try {
-    const [rows] = await db.query('SELECT * FROM users WHERE username = ?', [username]);
+    const [rows] = await db.query('SELECT * FROM users WHERE username = $1', [username]);
     if (rows.length === 0)
       return res.status(401).json({ error: 'Username atau password salah' });
 

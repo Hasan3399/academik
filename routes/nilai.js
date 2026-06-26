@@ -36,12 +36,12 @@ router.post('/', authMiddleware, adminOrDosen, async (req, res) => {
 
   try {
     const [result] = await db.query(
-      'INSERT INTO nilai (mahasiswa_id, mata_kuliah_id, semester, tahun_ajaran, nilai_angka, nilai_huruf) VALUES (?,?,?,?,?,?)',
+      'INSERT INTO nilai (mahasiswa_id, mata_kuliah_id, semester, tahun_ajaran, nilai_angka, nilai_huruf) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
       [mahasiswa_id, mata_kuliah_id, semester, tahun_ajaran, nilai_angka, nilai_huruf]
     );
-    res.status(201).json({ id: result.insertId, nilai_huruf, message: 'Nilai berhasil ditambahkan' });
+    res.status(201).json({ id: result[0].id, nilai_huruf, message: 'Nilai berhasil ditambahkan' });
   } catch (err) {
-    if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Nilai untuk MK ini sudah ada di semester tersebut' });
+    if (err.code === '23505') return res.status(400).json({ error: 'Nilai untuk MK ini sudah ada di semester tersebut' });
     res.status(500).json({ error: err.message });
   }
 });
@@ -62,7 +62,7 @@ router.put('/:id', authMiddleware, adminOrDosen, async (req, res) => {
 
   try {
     await db.query(
-      'UPDATE nilai SET nilai_angka=?, nilai_huruf=?, semester=?, tahun_ajaran=? WHERE id=?',
+      'UPDATE nilai SET nilai_angka=$1, nilai_huruf=$2, semester=$3, tahun_ajaran=$4 WHERE id=$5',
       [nilai_angka, nilai_huruf, semester, tahun_ajaran, req.params.id]
     );
     res.json({ message: 'Nilai berhasil diperbarui', nilai_huruf });
@@ -73,7 +73,7 @@ router.put('/:id', authMiddleware, adminOrDosen, async (req, res) => {
 
 router.delete('/:id', authMiddleware, adminOrDosen, async (req, res) => {
   try {
-    await db.query('DELETE FROM nilai WHERE id = ?', [req.params.id]);
+    await db.query('DELETE FROM nilai WHERE id = $1', [req.params.id]);
     res.json({ message: 'Nilai berhasil dihapus' });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -83,11 +83,11 @@ router.delete('/:id', authMiddleware, adminOrDosen, async (req, res) => {
 // GET statistik untuk dashboard
 router.get('/statistik/ringkasan', authMiddleware, async (req, res) => {
   try {
-    const [[{ total_mhs }]] = await db.query('SELECT COUNT(*) as total_mhs FROM mahasiswa');
-    const [[{ total_mk }]] = await db.query('SELECT COUNT(*) as total_mk FROM mata_kuliah');
-    const [[{ total_nilai }]] = await db.query('SELECT COUNT(*) as total_nilai FROM nilai');
-    const [[{ rata_nilai }]] = await db.query('SELECT AVG(nilai_angka) as rata_nilai FROM nilai');
-    
+    const [mhsRows] = await db.query('SELECT COUNT(*) as total_mhs FROM mahasiswa');
+    const [mkRows] = await db.query('SELECT COUNT(*) as total_mk FROM mata_kuliah');
+    const [nilaiRows] = await db.query('SELECT COUNT(*) as total_nilai FROM nilai');
+    const [avgRows] = await db.query('SELECT AVG(nilai_angka) as rata_nilai FROM nilai');
+
     const [dist] = await db.query(`
       SELECT nilai_huruf, COUNT(*) as jumlah
       FROM nilai
@@ -102,10 +102,10 @@ router.get('/statistik/ringkasan', authMiddleware, async (req, res) => {
     `);
 
     res.json({
-      total_mahasiswa: total_mhs,
-      total_mata_kuliah: total_mk,
-      total_nilai: total_nilai,
-      rata_rata_nilai: rata_nilai ? parseFloat(rata_nilai).toFixed(2) : 0,
+      total_mahasiswa: parseInt(mhsRows[0].total_mhs, 10),
+      total_mata_kuliah: parseInt(mkRows[0].total_mk, 10),
+      total_nilai: parseInt(nilaiRows[0].total_nilai, 10),
+      rata_rata_nilai: avgRows[0].rata_nilai ? parseFloat(avgRows[0].rata_nilai).toFixed(2) : 0,
       distribusi_nilai: dist,
       mahasiswa_per_jurusan: per_jurusan
     });
