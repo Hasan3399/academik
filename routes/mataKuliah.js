@@ -1,51 +1,104 @@
+const { query } = require('../config/database');
 const express = require('express');
 const router = express.Router();
-const db = require('../config/database');
-const { authMiddleware, adminOrDosen } = require('../config/middleware');
 
-router.get('/', authMiddleware, async (req, res) => {
+// Get all mata kuliah
+router.get('/', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM mata_kuliah ORDER BY kode_mk');
-    res.json(rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const result = await query(
+      'SELECT id, kode_mk, nama_mk, sks, semester, jurusan, dosen_pengampu FROM mata_kuliah ORDER BY kode_mk'
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Terjadi kesalahan pada server' });
   }
 });
 
-router.post('/', authMiddleware, adminOrDosen, async (req, res) => {
-  const { kode_mk, nama_mk, sks, semester, jurusan, dosen_pengampu } = req.body;
-  if (!kode_mk || !nama_mk) return res.status(400).json({ error: 'Kode dan nama MK wajib diisi' });
+// Get mata kuliah by ID
+router.get('/:id', async (req, res) => {
   try {
-    const [result] = await db.query(
-      'INSERT INTO mata_kuliah (kode_mk, nama_mk, sks, semester, jurusan, dosen_pengampu) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
+    const result = await query(
+      'SELECT * FROM mata_kuliah WHERE id = $1',
+      [req.params.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Mata kuliah tidak ditemukan' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Terjadi kesalahan pada server' });
+  }
+});
+
+// Create mata kuliah
+router.post('/', async (req, res) => {
+  try {
+    const { kode_mk, nama_mk, sks, semester, jurusan, dosen_pengampu } = req.body;
+
+    if (!kode_mk || !nama_mk) {
+      return res.status(400).json({ error: 'Kode MK dan nama MK harus diisi' });
+    }
+
+    const result = await query(
+      'INSERT INTO mata_kuliah (kode_mk, nama_mk, sks, semester, jurusan, dosen_pengampu) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
       [kode_mk, nama_mk, sks, semester, jurusan, dosen_pengampu]
     );
-    res.status(201).json({ id: result[0].id, message: 'Mata kuliah berhasil ditambahkan' });
-  } catch (err) {
-    if (err.code === '23505') return res.status(400).json({ error: 'Kode MK sudah ada' });
-    res.status(500).json({ error: err.message });
+
+    res.status(201).json({
+      message: 'Mata kuliah berhasil ditambahkan',
+      data: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    if (error.code === '23505') {
+      res.status(400).json({ error: 'Kode MK sudah terdaftar' });
+    } else {
+      res.status(500).json({ error: 'Terjadi kesalahan pada server' });
+    }
   }
 });
 
-router.put('/:id', authMiddleware, adminOrDosen, async (req, res) => {
-  const { kode_mk, nama_mk, sks, semester, jurusan, dosen_pengampu } = req.body;
+// Update mata kuliah
+router.put('/:id', async (req, res) => {
   try {
-    await db.query(
-      'UPDATE mata_kuliah SET kode_mk=$1, nama_mk=$2, sks=$3, semester=$4, jurusan=$5, dosen_pengampu=$6 WHERE id=$7',
-      [kode_mk, nama_mk, sks, semester, jurusan, dosen_pengampu, req.params.id]
+    const { nama_mk, sks, semester, jurusan, dosen_pengampu } = req.body;
+
+    const result = await query(
+      'UPDATE mata_kuliah SET nama_mk = $1, sks = $2, semester = $3, jurusan = $4, dosen_pengampu = $5 WHERE id = $6 RETURNING *',
+      [nama_mk, sks, semester, jurusan, dosen_pengampu, req.params.id]
     );
-    res.json({ message: 'Mata kuliah berhasil diperbarui' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Mata kuliah tidak ditemukan' });
+    }
+
+    res.json({
+      message: 'Mata kuliah berhasil diperbarui',
+      data: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Terjadi kesalahan pada server' });
   }
 });
 
-router.delete('/:id', authMiddleware, adminOrDosen, async (req, res) => {
+// Delete mata kuliah
+router.delete('/:id', async (req, res) => {
   try {
-    await db.query('DELETE FROM mata_kuliah WHERE id = $1', [req.params.id]);
+    const result = await query('DELETE FROM mata_kuliah WHERE id = $1 RETURNING id', [req.params.id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Mata kuliah tidak ditemukan' });
+    }
+
     res.json({ message: 'Mata kuliah berhasil dihapus' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Terjadi kesalahan pada server' });
   }
 });
 
